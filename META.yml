@@ -1,5 +1,5 @@
 abstract: Encode/Decode Values In A Structure
-author: Daisuke Maki <daisuke@endeworks.jp<gt>
+author: Daisuke Maki <daisuke@endeworks.jp>
 build_requires: 
   Test::More: 0
 distribution_type: module
@@ -13,4 +13,4 @@ no_index:
 requires: 
   Data::Visitor: 0
   Encode: 0
-version: 0.01
+version: 0.02

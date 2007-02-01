@@ -1,5 +1,10 @@
 Changes
 =======
 
+0.02 - 01 Feb 2006
+  - Fixed stupid bug where Data::Visitor::Encode wasn't actually
+    visiting child nodes. 
+  - Fixed tests accordingly
+
 0.01 - 13 Dec 2006
   - Initial release.

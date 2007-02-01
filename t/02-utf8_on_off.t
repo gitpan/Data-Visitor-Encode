@@ -1,58 +1,64 @@
 use strict;
 use utf8;
-use Test::More tests => 13;
+use Test::More tests => 39;
 
 BEGIN
 {
     use_ok("Data::Visitor::Encode");
 }
 
+do 't/checkfunc.pl';
+
 my $nihongo = "日本語";
 my $aiueo   = "あいうえお";
-my %source = ($nihongo => $aiueo);
+my %source;
 my %visited;
 
 my $ev = Data::Visitor::Encode->new();
 
+my $check_utf8_on = make_check_closure(sub { Encode::is_utf8($_[0]) }, "utf8");
+my $check_utf8_off = make_check_closure(sub { ! Encode::is_utf8($_[0]) }, "NOT utf8");
+
 # Hash
+%source = (
+    $nihongo => $aiueo, 
+    nested_hashref   => { $nihongo => $aiueo },
+    nested_arrayref  => [ $nihongo, $aiueo ],
+    nested_scalarref => \$nihongo,
+);
 my $visited = $ev->utf8_off(\%source);
-while (my($key, $value) = each %$visited) {
-    ok(! Encode::is_utf8($key), "Assert key is NOT utf8");
-    ok(! Encode::is_utf8($value), "Assert value is NOT utf8");
-}
+$check_utf8_off->($visited);
 
 $visited = $ev->utf8_on($visited);
-while (my($key, $value) = each %$visited) {
-    ok(Encode::is_utf8($key), "key is utf8");
-    ok(Encode::is_utf8($value), "value is utf8");
-}
+$check_utf8_on->($visited);
 
 # List
-my @source = ($nihongo, $aiueo);
+my @source = (
+    $nihongo, $aiueo,
+    { $nihongo => $aiueo },
+    [ $nihongo, $aiueo ],
+    \$nihongo
+);
 $visited = $ev->utf8_off(\@source);
-foreach (@$visited) {
-    ok(! Encode::is_utf8($_), "Assert value is NOT utf8");
-}
+$check_utf8_off->($visited);
 
 $visited = $ev->utf8_on($visited);
-foreach (@$visited) {
-    ok(Encode::is_utf8($_), "Assert value is utf8");
-}
+$check_utf8_on->($visited);
 
 # Scalar (Ref)
 my $source = \$nihongo;
 $visited = $ev->utf8_off($source);
-ok(! Encode::is_utf8($$visited), "Assert value is NOT utf8");
+$check_utf8_off->($visited);
 
 $visited = $ev->utf8_on($visited);
-ok(Encode::is_utf8($$visited), "Assert value is utf8");
+$check_utf8_on->($visited);
 
 # Scalar
 $source = $nihongo;
 $visited = $ev->utf8_off($source);
-ok(! Encode::is_utf8($visited), "Assert value is NOT utf8");
+$check_utf8_off->($visited);
 
 $visited = $ev->utf8_on($visited);
-ok(Encode::is_utf8($visited), "Assert value is utf8");
+$check_utf8_on->($visited);
 
 1;

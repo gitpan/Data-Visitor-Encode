@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use Test::More tests => 13;
+use Test::More tests => 39;
 use Encode;
 
 BEGIN
@@ -8,50 +8,70 @@ BEGIN
     use_ok("Data::Visitor::Encode");
 }
 
+do 't/checkfunc.pl';
+
 my $nihongo = "日本語";
 my $aiueo   = "あいうえお";
-my %source = ($nihongo => $aiueo);
+my %source;
 my %visited;
+
+%source = ($nihongo => $aiueo);
 
 my $ev = Data::Visitor::Encode->new();
 
+my $check_euc_jp = make_check_closure(
+    sub {
+        eval { Encode::decode('euc-jp', $_[0], Encode::FB_CROAK()) };
+        return !$@;
+    }, "euc-jp"
+);
+my $check_utf8 = make_check_closure(
+    sub {
+        eval { Encode::encode('utf-8', $_[0], Encode::FB_CROAK()) };
+        return !$@
+    }, "utf8"
+);
+
 # Hash
+%source = (
+    $nihongo => $aiueo, 
+    nested_hashref   => { $nihongo => $aiueo },
+    nested_arrayref  => [ $nihongo, $aiueo ],
+    nested_scalarref => \$nihongo,
+);
 my $visited = $ev->encode('euc-jp', \%source);
-while (my($key, $value) = each %$visited) {
-    is($key, encode('euc-jp', $nihongo), "Key is in euc-jp");
-    is($value, encode('euc-jp', $aiueo), "Value is in euc-jp");
-}
+$check_euc_jp->($visited);
 
 $visited = $ev->decode('euc-jp', $visited);
-while (my($key, $value) = each %$visited) {
-    is($key, $nihongo, "Key is UTF-8");
-    is($value, $aiueo, "Key is UTF-8");
-}
+$check_utf8->($visited);
 
 # List
-my @source = ($nihongo, $aiueo);
+my @source = (
+    $nihongo, $aiueo,
+    { $nihongo => $aiueo },
+    [ $nihongo, $aiueo ],
+    \$nihongo
+);
 $visited = $ev->encode('euc-jp', \@source);
-is($visited->[0], encode('euc-jp', $nihongo), "Vallue is in euc-jp");
-is($visited->[1], encode('euc-jp', $aiueo), "Value is in euc-jp");
+$check_euc_jp->($visited);
 
 $visited = $ev->decode('euc-jp', $visited);
-is($visited->[0], $nihongo, "Vallue is in UTF-8");
-is($visited->[1], $aiueo, "Value is in UTF-8");
+$check_utf8->($visited);
 
 # Scalar (Ref)
 my $source = \$nihongo;
 $visited = $ev->encode('euc-jp', $source);
-is($$visited, encode('euc-jp', $nihongo), "Value is in euc-jp");
+$check_euc_jp->($visited);
 
 $visited = $ev->decode('euc-jp', $visited);
-is($$visited, $nihongo, "Value is in UTF-8");
+$check_utf8->($visited);
 
 # Scalar
 $source = $nihongo;
 $visited = $ev->encode('euc-jp', $source);
-is($visited, encode('euc-jp', $nihongo), "Value is in euc-jp");
+$check_euc_jp->($visited);
 
 $visited = $ev->decode('euc-jp', $visited);
-is($visited, $nihongo, "Value is UTF-8");
+$check_utf8->($visited);
 
 1;

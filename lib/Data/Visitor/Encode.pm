@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 4460 2006-12-13T10:17:16.290415Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 5375 2007-02-01T08:07:10.951499Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -10,7 +10,7 @@ use Encode();
 
 BEGIN
 {
-    our $VERSION = '0.01';
+    our $VERSION = '0.02';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
@@ -28,7 +28,7 @@ sub visit_hash
     my %map = map {
         (
             $self->visit_value($_),
-            $self->visit_value($hash->{$_})
+            $self->visit($hash->{$_})
         )
     } keys %$hash;
     return \%map;
@@ -130,12 +130,12 @@ Data::Visitor::Encode - Encode/Decode Values In A Structure
 
   use Data::Visitor::Encode;
 
-  my $ev = Data::Visitor::Encode->new();
+  my $dev = Data::Visitor::Encode->new();
   my %hash = (...); # assume data is in Perl native Unicode
-  $ev->encode('euc-jp', \%hash); # now strings are in euc-jp
-  $ev->decode('euc-jp', \%hash); # now strings are back in unicode
-  $ev->utf8_on(\%hash);
-  $ev->utf8_off(\%hash);
+  $dev->encode('euc-jp', \%hash); # now strings are in euc-jp
+  $dev->decode('euc-jp', \%hash); # now strings are back in unicode
+  $dev->utf8_on(\%hash);
+  $dev->utf8_off(\%hash);
 
 =head1 DESCRIPTION
 
@@ -148,45 +148,45 @@ module may help you.
 
 =head2 utf8_on
 
-  $ev->utf8_on(\%hash);
-  $ev->utf8_on(\@list);
-  $ev->utf8_on(\$scalar);
-  $ev->utf8_on($scalar);
+  $dev->utf8_on(\%hash);
+  $dev->utf8_on(\@list);
+  $dev->utf8_on(\$scalar);
+  $dev->utf8_on($scalar);
 
 Returns a structure containing nodes with utf8 flag on
 
 =head2 utf8_off
 
-  $ev->utf8_off(\%hash);
-  $ev->utf8_off(\@list);
-  $ev->utf8_off(\$scalar);
-  $ev->utf8_off($scalar);
+  $dev->utf8_off(\%hash);
+  $dev->utf8_off(\@list);
+  $dev->utf8_off(\$scalar);
+  $dev->utf8_off($scalar);
 
 Returns a structure containing nodes with utf8 flag off
 
 =head2 encode
 
-  $ev->encode($encoding, \%hash);
-  $ev->encode($encoding, \@list);
-  $ev->encode($encoding, \$scalar);
-  $ev->encode($encoding, $scalar);
+  $dev->encode($encoding, \%hash   [, CHECK]);
+  $dev->encode($encoding, \@list   [, CHECK]);
+  $dev->encode($encoding, \$scalar [, CHECK]);
+  $dev->encode($encoding, $scalar  [, CHECK]);
 
-Returns a stricture contains nodes which are encoded in the specified
+Returns a stricture containing nodes which are encoded in the specified
 encoding.
 
 =head2 decode
 
-  $ev->decode($encoding, \%hash);
-  $ev->decode($encoding, \@list);
-  $ev->decode($encoding, \$scalar);
-  $ev->decode($encoding, $scalar);
+  $dev->decode($encoding, \%hash);
+  $dev->decode($encoding, \@list);
+  $dev->decode($encoding, \$scalar);
+  $dev->decode($encoding, $scalar);
 
-Returns a stricture contains nodes which are decoded from the specified
+Returns a stricture containing nodes which are decoded from the specified
 encoding.
 
 =head1 AUTHOR
 
-Daisuke Maki E<lt>daisuke@endeworks.jp<gt>
+Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
 
 =head1 SEE ALSO
 
