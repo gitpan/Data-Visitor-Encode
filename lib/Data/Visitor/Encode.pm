@@ -11,14 +11,13 @@ use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.03';
+    our $VERSION = '0.04';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
 sub visit_glob
 {
-    require Carp;
-    Carp::carp("Data::Visitor::Encode Can't work with globs");
+    return $_[1];
 }
 
 # We care about the hash key as well, so override
@@ -166,6 +165,7 @@ module may help you.
   $dev->utf8_on(\@list);
   $dev->utf8_on(\$scalar);
   $dev->utf8_on($scalar);
+  $dev->utf8_on($object);
 
 Returns a structure containing nodes with utf8 flag on
 
@@ -175,6 +175,7 @@ Returns a structure containing nodes with utf8 flag on
   $dev->utf8_off(\@list);
   $dev->utf8_off(\$scalar);
   $dev->utf8_off($scalar);
+  $dev->utf8_off($object);
 
 Returns a structure containing nodes with utf8 flag off
 
@@ -184,6 +185,7 @@ Returns a structure containing nodes with utf8 flag off
   $dev->encode($encoding, \@list   [, CHECK]);
   $dev->encode($encoding, \$scalar [, CHECK]);
   $dev->encode($encoding, $scalar  [, CHECK]);
+  $dev->encode($encoding, $object  [, CHECK]);
 
 Returns a structure containing nodes which are encoded in the specified
 encoding.
@@ -194,6 +196,7 @@ encoding.
   $dev->decode($encoding, \@list);
   $dev->decode($encoding, \$scalar);
   $dev->decode($encoding, $scalar);
+  $dev->decode($encoding, $object);
 
 Returns a structure containing nodes which are decoded from the specified
 encoding.

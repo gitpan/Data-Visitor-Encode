@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.04 - 28 Mar 2007
+  - Return globs as-is
+
 0.03 - 28 Mar 2007
   - Visit objects properly, too. Requires Scalar::Util.
 
