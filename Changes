@@ -1,7 +1,10 @@
 Changes
 =======
 
-0.02 - 01 Feb 2006
+0.03 - 28 Mar 2007
+  - Visit objects properly, too. Requires Scalar::Util.
+
+0.02 - 01 Feb 2007
   - Fixed stupid bug where Data::Visitor::Encode wasn't actually
     visiting child nodes. 
   - Fixed tests accordingly

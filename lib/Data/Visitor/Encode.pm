@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 5375 2007-02-01T08:07:10.951499Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6215 2007-03-28T11:42:23.243798Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -7,10 +7,11 @@ package Data::Visitor::Encode;
 use strict;
 use base qw(Data::Visitor);
 use Encode();
+use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.02';
+    our $VERSION = '0.03';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
@@ -32,6 +33,19 @@ sub visit_hash
         )
     } keys %$hash;
     return \%map;
+}
+
+sub visit_object
+{
+    my ($self, $data) = @_;
+
+    my $type = lc (reftype $data);
+    $type = 'value' if $type eq 'scalar';
+
+    my $method = "visit_$type";
+    my $ret    = $self->$method($data);
+
+    return bless $ret, blessed $data;
 }
 
 sub visit_value
@@ -171,7 +185,7 @@ Returns a structure containing nodes with utf8 flag off
   $dev->encode($encoding, \$scalar [, CHECK]);
   $dev->encode($encoding, $scalar  [, CHECK]);
 
-Returns a stricture containing nodes which are encoded in the specified
+Returns a structure containing nodes which are encoded in the specified
 encoding.
 
 =head2 decode
@@ -181,7 +195,7 @@ encoding.
   $dev->decode($encoding, \$scalar);
   $dev->decode($encoding, $scalar);
 
-Returns a stricture containing nodes which are decoded from the specified
+Returns a structure containing nodes which are decoded from the specified
 encoding.
 
 =head1 AUTHOR

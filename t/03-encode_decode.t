@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use Test::More tests => 39;
+use Test::More tests => 61;
 use Encode;
 
 BEGIN
@@ -73,5 +73,15 @@ $check_euc_jp->($visited);
 
 $visited = $ev->decode('euc-jp', $visited);
 $check_utf8->($visited);
+
+# Object
+my $class = 'DVETestObject';
+$visited = $ev->encode('euc-jp', bless \%source, $class);
+$check_euc_jp->($visited);
+isa_ok($visited, $class);
+
+$visited = $ev->decode('euc-jp', $visited);
+$check_utf8->($visited);
+isa_ok($visited, $class);
 
 1;

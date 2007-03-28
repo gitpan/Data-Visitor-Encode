@@ -1,10 +1,14 @@
+--- 
 abstract: Encode/Decode Values In A Structure
 author: Daisuke Maki <daisuke@endeworks.jp>
 build_requires: 
   Test::More: 0
 distribution_type: module
-generated_by: Module::Install version 0.64
+generated_by: Module::Install version 0.65
 license: perl
+meta-spec: 
+  url: http://module-build.sourceforge.net/META-spec-v1.3.html
+  version: 1.3
 name: Data-Visitor-Encode
 no_index: 
   directory: 
@@ -13,4 +17,5 @@ no_index:
 requires: 
   Data::Visitor: 0
   Encode: 0
-version: 0.02
+  Scalar::Util: 0
+version: 0.03

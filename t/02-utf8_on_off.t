@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use Test::More tests => 39;
+use Test::More tests => 61;
 
 BEGIN
 {
@@ -60,5 +60,15 @@ $check_utf8_off->($visited);
 
 $visited = $ev->utf8_on($visited);
 $check_utf8_on->($visited);
+
+# Object
+my $class = 'DVETestObject';
+$visited = $ev->utf8_off(bless \%source, $class);
+$check_utf8_off->($visited);
+isa_ok($visited, $class);
+
+$visited = $ev->utf8_on($visited);
+$check_utf8_on->($visited);
+isa_ok($visited, $class);
 
 1;

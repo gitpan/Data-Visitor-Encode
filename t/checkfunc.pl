@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Scalar::Util qw(reftype);
 
 sub make_check_closure
 {
@@ -9,7 +10,7 @@ sub make_check_closure
     my $func;
     $func = sub {
         my $h = shift;
-        my $ref = ref($h);
+        my $ref = reftype($h);
 
         if (! $ref) {
             ok($check->($h), "Assert value is $name");
