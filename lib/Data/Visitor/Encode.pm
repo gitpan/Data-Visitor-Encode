@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6215 2007-03-28T11:42:23.243798Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6617 2007-04-16T02:22:53.899830Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -11,13 +11,24 @@ use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.04';
+    our $VERSION = '0.05';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
 sub visit_glob
 {
     return $_[1];
+}
+
+sub visit_scalar
+{
+    my ($self, $ref) = @_;
+
+    my $ret = $self->visit_value($$ref);
+    if ($ret) {
+        return \$ret;
+    }
+    return undef;
 }
 
 # We care about the hash key as well, so override
@@ -39,8 +50,6 @@ sub visit_object
     my ($self, $data) = @_;
 
     my $type = lc (reftype $data);
-    $type = 'value' if $type eq 'scalar';
-
     my $method = "visit_$type";
     my $ret    = $self->$method($data);
 

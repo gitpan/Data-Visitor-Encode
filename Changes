@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.05 - 16 Apr 2007
+  - Properly handle blessed scalar refs (like URI)
+
 0.04 - 28 Mar 2007
   - Return globs as-is
 
