@@ -17,4 +17,6 @@ META.yml
 t/01-sanity.t
 t/02-utf8_on_off.t
 t/03-encode_decode.t
+t/99_pod-coverage.t
+t/99_pod.t
 t/checkfunc.pl

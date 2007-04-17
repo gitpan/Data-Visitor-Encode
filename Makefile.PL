@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/Makefile.PL 6215 2007-03-28T11:42:23.243798Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/Makefile.PL 6628 2007-04-17T02:17:09.187313Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.

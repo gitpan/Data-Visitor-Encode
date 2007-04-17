@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6617 2007-04-16T02:22:53.899830Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6628 2007-04-17T02:17:09.187313Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -11,7 +11,7 @@ use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.05';
+    our $VERSION = '0.06';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
@@ -209,6 +209,26 @@ encoding.
 
 Returns a structure containing nodes which are decoded from the specified
 encoding.
+
+=head2 do_decode
+
+=head2 do_encode
+
+=head2 do_utf8_off
+
+=head2 do_utf8_on
+
+=head2 visit_glob
+
+=head2 visit_hash
+
+=head2 visit_object
+
+=head2 visit_scalar
+
+=head2 visit_value
+
+These methods are private. Only use if it you are subclassing this class.
 
 =head1 AUTHOR
 

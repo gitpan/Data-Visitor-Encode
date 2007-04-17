@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.06 - 17 Apr 2007
+  - No code change, just kwalitee related fixes
+
 0.05 - 16 Apr 2007
   - Properly handle blessed scalar refs (like URI)
 
