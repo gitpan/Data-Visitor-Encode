@@ -1,17 +1,18 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 6628 2007-04-17T02:17:09.187313Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 7017 2007-05-03T07:00:54.018501Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
 
 package Data::Visitor::Encode;
 use strict;
+use warnings;
 use base qw(Data::Visitor);
 use Encode();
 use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.06';
+    our $VERSION = '0.07';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
@@ -140,6 +141,34 @@ sub encode
     $self->visit($_[0]);
 }
 
+sub do_decode_utf8
+{
+    my $self = shift;
+    my $data = shift;
+    return Encode::decode_utf8($data);
+}
+
+sub decode_utf8
+{
+    my $self = shift;
+    $self->visit_method('decode_utf8');
+    $self->visit($_[0]);
+}
+
+sub do_encode_utf8
+{
+    my $self = shift;
+    my $data = shift;
+    return Encode::encode_utf8($data);
+}
+
+sub encode_utf8
+{
+    my $self = shift;
+    $self->visit_method('encode_utf8');
+    $self->visit($_[0]);
+}
+
 1;
 
 __END__
@@ -210,6 +239,28 @@ encoding.
 Returns a structure containing nodes which are decoded from the specified
 encoding.
 
+=head2 decode_utf8
+
+  $dev->decode_utf8(\%hash);
+  $dev->decode_utf8(\@list);
+  $dev->decode_utf8(\$scalar);
+  $dev->decode_utf8($scalar);
+  $dev->decode_utf8($object);
+
+Returns a structure containing nodes which have been processed through
+decode_utf8.
+
+=head2 encode_utf8
+
+  $dev->encode_utf8(\%hash);
+  $dev->encode_utf8(\@list);
+  $dev->encode_utf8(\$scalar);
+  $dev->encode_utf8($scalar);
+  $dev->encode_utf8($object);
+
+Returns a structure containing nodes which have been processed through
+encode_utf8.
+
 =head2 do_decode
 
 =head2 do_encode
@@ -217,6 +268,10 @@ encoding.
 =head2 do_utf8_off
 
 =head2 do_utf8_on
+
+=head2 do_encode_utf8
+
+=head2 do_decode_utf8
 
 =head2 visit_glob
 

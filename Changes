@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.07 - 03 May 2007
+  - Add decode_utf8() and encode_utf8()
+  - chmod a-x Makefile.PL for kwalitee
+
 0.06 - 17 Apr 2007
   - No code change, just kwalitee related fixes
 
