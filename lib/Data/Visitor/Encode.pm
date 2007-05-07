@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 7017 2007-05-03T07:00:54.018501Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 7066 2007-05-07T08:38:36.935557Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -12,7 +12,7 @@ use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.07';
+    our $VERSION = '0.08';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
 
@@ -165,8 +165,80 @@ sub do_encode_utf8
 sub encode_utf8
 {
     my $self = shift;
+    my $enc  = $_[1];
     $self->visit_method('encode_utf8');
     $self->visit($_[0]);
+}
+
+sub do_h2z
+{
+    my $self = shift;
+    my $data = shift;
+
+    my $is_euc = ($self->extra_args =~ /^euc-jp$/i);
+    my $utf8_on = Encode::is_utf8($data);
+    my $euc  =
+        $is_euc ?
+            $data :
+        $utf8_on ?
+            Encode::encode('euc-jp', $data) :
+            Encode::encode('euc-jp', Encode::decode($self->extra_args, $data))
+    ;
+
+    Encode::JP::H2Z::h2z(\$euc);
+
+    return 
+        $is_euc ?
+            $euc :
+        $utf8_on ?
+            Encode::decode('euc-jp', $euc) :
+            Encode::encode($self->extra_args, Encode::decode('euc-jp', $euc))
+    ;   
+}
+
+sub h2z
+{
+    my $self = shift;
+
+    require Encode::JP::H2Z;
+    $self->visit_method('h2z');
+    $self->extra_args($_[0]);
+    $self->visit($_[1]);
+}
+
+sub do_z2h
+{
+    my $self = shift;
+    my $data = shift;
+
+    my $is_euc = ($self->extra_args =~ /^euc-jp$/i);
+    my $utf8_on = Encode::is_utf8($data);
+    my $euc  =
+        $is_euc ?
+            $data :
+        $utf8_on ?
+            Encode::encode('euc-jp', $data) :
+            Encode::encode('euc-jp', Encode::decode($self->extra_args, $data))
+    ;
+
+    Encode::JP::H2Z::z2h(\$euc);
+        
+    return 
+        $is_euc ?
+            $euc :
+        $utf8_on ?
+            Encode::decode('euc-jp', $euc) :
+            Encode::encode($self->extra_args, Encode::decode('euc-jp', $euc))
+    ;   
+}
+
+sub z2h
+{
+    my $self = shift;
+    require Encode::JP::H2Z;
+    $self->visit_method('z2h');
+    $self->extra_args($_[0]);
+    $self->visit($_[1]);
 }
 
 1;
@@ -261,6 +333,54 @@ decode_utf8.
 Returns a structure containing nodes which have been processed through
 encode_utf8.
 
+=head2 h2z
+
+=head2 z2h
+
+  $dev->h2z($encoding, \%hash);
+  $dev->h2z($encoding, \@list);
+  $dev->h2z($encoding, \$scalar);
+  $dev->h2z($encoding, $scalar);
+  $dev->h2z($encoding, $object);
+
+h2z and z2h are Japanese-only methods (hey, I'm a little biased like that).
+They perform the task of mapping half-width katakana to full-width katakana
+and vice-versa.
+
+These methods use Encode::JP::H2Z, which requires us to go from the
+original encoding to euc-jp and then back. There are other modules that are 
+built to handle exactly this problem, which may come out to be faster than 
+using Encode.pm's somewhat hidden Encode::JP::H2Z, but I really don't care
+for adding another dependency to this module other than Encode.pm, so
+here it is.
+
+If you're significantly worried about performance, I'll gladly accept patches
+as long as there are no prerequisite modules or the prerequisite is optional.
+
+Encode.pm contains a Pure Perl mapping 
+
+=head2 decode_utf8
+
+  $dev->decode_utf8(\%hash);
+  $dev->decode_utf8(\@list);
+  $dev->decode_utf8(\$scalar);
+  $dev->decode_utf8($scalar);
+  $dev->decode_utf8($object);
+
+Returns a structure containing nodes which have been processed through
+decode_utf8.
+
+=head2 encode_utf8
+
+  $dev->encode_utf8(\%hash);
+  $dev->encode_utf8(\@list);
+  $dev->encode_utf8(\$scalar);
+  $dev->encode_utf8($scalar);
+  $dev->encode_utf8($object);
+
+Returns a structure containing nodes which have been processed through
+encode_utf8.
+
 =head2 do_decode
 
 =head2 do_encode
@@ -268,6 +388,10 @@ encode_utf8.
 =head2 do_utf8_off
 
 =head2 do_utf8_on
+
+=head2 do_h2z
+
+=head2 do_z2h
 
 =head2 do_encode_utf8
 

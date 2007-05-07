@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.08 - 07 May 2007
+  - Add h2z() and z2h()
+
 0.07 - 03 May 2007
   - Add decode_utf8() and encode_utf8()
   - chmod a-x Makefile.PL for kwalitee
