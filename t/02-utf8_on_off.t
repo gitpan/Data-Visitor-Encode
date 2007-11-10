@@ -14,7 +14,7 @@ my $aiueo   = "あいうえお";
 my %source;
 my %visited;
 
-my $ev = Data::Visitor::Encode->new();
+my $ev = 'Data::Visitor::Encode';
 
 my $check_utf8_on = make_check_closure(sub { Encode::is_utf8($_[0]) }, "utf8");
 my $check_utf8_off = make_check_closure(sub { ! Encode::is_utf8($_[0]) }, "NOT utf8");

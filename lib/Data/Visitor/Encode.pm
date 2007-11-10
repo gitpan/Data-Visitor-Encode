@@ -1,4 +1,4 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 7066 2007-05-07T08:38:36.935557Z daisuke  $
+# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 8904 2007-11-10T17:50:32.867299Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -12,9 +12,11 @@ use Scalar::Util qw(reftype blessed);
 
 BEGIN
 {
-    our $VERSION = '0.08';
+    our $VERSION = '0.09000';
     __PACKAGE__->mk_accessors('visit_method', 'extra_args');
 }
+
+sub _object { ref $_[0] ? $_[0] : $_[0]->new }
 
 sub visit_glob
 {
@@ -95,14 +97,14 @@ sub do_utf8_off
 
 sub utf8_on
 {
-    my $self = shift;
+    my $self = _object(shift);
     $self->visit_method('utf8_on');
     $self->visit($_[0]);
 }
 
 sub utf8_off
 {
-    my $self = shift;
+    my $self = _object(shift);
     $self->visit_method('utf8_off');
     $self->visit($_[0]);
 }
@@ -123,7 +125,7 @@ sub do_decode
 
 sub decode
 {
-    my $self = shift;
+    my $self = _object(shift);
     my $code = shift;
 
     $self->extra_args($code);
@@ -133,7 +135,7 @@ sub decode
 
 sub encode
 {
-    my $self = shift;
+    my $self = _object(shift);
     my $code = shift;
 
     $self->extra_args($code);
@@ -150,7 +152,7 @@ sub do_decode_utf8
 
 sub decode_utf8
 {
-    my $self = shift;
+    my $self = _object(shift);
     $self->visit_method('decode_utf8');
     $self->visit($_[0]);
 }
@@ -164,7 +166,7 @@ sub do_encode_utf8
 
 sub encode_utf8
 {
-    my $self = shift;
+    my $self = _object(shift);
     my $enc  = $_[1];
     $self->visit_method('encode_utf8');
     $self->visit($_[0]);
@@ -198,7 +200,7 @@ sub do_h2z
 
 sub h2z
 {
-    my $self = shift;
+    my $self = _object(shift);
 
     require Encode::JP::H2Z;
     $self->visit_method('h2z');
@@ -234,7 +236,7 @@ sub do_z2h
 
 sub z2h
 {
-    my $self = shift;
+    my $self = _object(shift);
     require Encode::JP::H2Z;
     $self->visit_method('z2h');
     $self->extra_args($_[0]);
@@ -266,6 +268,12 @@ Data::Visitor::Encode visits each node of a structure, and returns a new
 structure with each node's encoding (or similar action). If you ever wished
 to do a bulk encode/decode of the contents of a structure, then this
 module may help you.
+
+Starting from 0.09000, you can directly use the methods without instantiating
+the object:
+
+  Data::Visitor::Encode->encode('euc-jp', $obj);
+  # instead of Data::Visitor::Encode->new->encod('euc-jp', $obj)
 
 =head1 METHODS
 
@@ -357,8 +365,6 @@ here it is.
 If you're significantly worried about performance, I'll gladly accept patches
 as long as there are no prerequisite modules or the prerequisite is optional.
 
-Encode.pm contains a Pure Perl mapping 
-
 =head2 decode_utf8
 
   $dev->decode_utf8(\%hash);
@@ -411,10 +417,17 @@ These methods are private. Only use if it you are subclassing this class.
 
 =head1 AUTHOR
 
-Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
+Copyright (c) 2007 Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
 
 =head1 SEE ALSO
 
 L<Data::Visitor|Data::Visitor>, L<Encode|Encode>
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+See http://www.perl.com/perl/misc/Artistic.html
 
 =cut

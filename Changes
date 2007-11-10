@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.09000 - 11 Nov 2007
+  - Allow calling methods without instantiating a Data::Visitor::Encode
+    object. Now you can do Data::Visitor::Encode->encode(...) directly
+
 0.08 - 07 May 2007
   - Add h2z() and z2h()
 
