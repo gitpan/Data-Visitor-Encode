@@ -1,15 +1,15 @@
-# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 66664 2008-07-24T01:21:22.935374Z daisuke  $
+# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 66826 2008-07-24T13:59:47.718802Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
 
 package Data::Visitor::Encode;
-use Mouse; # only because Data::Visitor uses it :)
+use Squirrel; # only because Data::Visitor uses it :)
 
 extends 'Data::Visitor';
 use Encode();
 
-our $VERSION = '0.10000';
+our $VERSION = '0.10001';
 
 has 'visit_method' => (
     is => 'rw',
