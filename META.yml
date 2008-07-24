@@ -1,22 +1,24 @@
---- 
-abstract: Encode/Decode Values In A Structure
-author: 
-  - Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>
-build_requires: 
+---
+abstract: 'Encode/Decode Values In A Structure'
+author:
+  - 'Copyright (c) 2007 Daisuke Maki <daisuke@endeworks.jp>'
+build_requires:
   Test::More: 0
 distribution_type: module
-generated_by: Module::Install version 0.68
+generated_by: 'Module::Install version 0.76'
 license: perl
-meta-spec: 
-  url: http://module-build.sourceforge.net/META-spec-v1.3.html
-  version: 1.3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
 name: Data-Visitor-Encode
-no_index: 
-  directory: 
+no_index:
+  directory:
     - inc
     - t
-requires: 
-  Data::Visitor: 0
+requires:
+  Data::Visitor: 0.18
   Encode: 0
   Scalar::Util: 0
-version: 0.09000
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.10000

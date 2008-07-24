@@ -1,20 +1,27 @@
-# $Id: /mirror/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 8904 2007-11-10T17:50:32.867299Z daisuke  $
+# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 66664 2008-07-24T01:21:22.935374Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
 
 package Data::Visitor::Encode;
-use strict;
-use warnings;
-use base qw(Data::Visitor);
-use Encode();
-use Scalar::Util qw(reftype blessed);
+use Mouse; # only because Data::Visitor uses it :)
 
-BEGIN
-{
-    our $VERSION = '0.09000';
-    __PACKAGE__->mk_accessors('visit_method', 'extra_args');
-}
+extends 'Data::Visitor';
+use Encode();
+
+our $VERSION = '0.10000';
+
+has 'visit_method' => (
+    is => 'rw',
+    isa => 'Str'
+);
+
+has 'extra_args' => (
+    is => 'rw',
+);
+
+no Mouse;
+use Scalar::Util qw(reftype blessed);
 
 sub _object { ref $_[0] ? $_[0] : $_[0]->new }
 
