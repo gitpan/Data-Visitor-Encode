@@ -22,3 +22,4 @@ t/05_h2z.t
 t/99_pod-coverage.t
 t/99_pod.t
 t/checkfunc.pl
+t/lib/Test/Data/Visitor/Encode.pm

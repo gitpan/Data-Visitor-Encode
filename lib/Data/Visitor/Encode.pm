@@ -1,4 +1,4 @@
-# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 66826 2008-07-24T13:59:47.718802Z daisuke  $
+# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/lib/Data/Visitor/Encode.pm 90226 2008-11-06T03:40:25.000974Z daisuke  $
 #
 # Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
@@ -9,7 +9,7 @@ use Squirrel; # only because Data::Visitor uses it :)
 extends 'Data::Visitor';
 use Encode();
 
-our $VERSION = '0.10001';
+our $VERSION = '0.10002';
 
 has 'visit_method' => (
     is => 'rw',
@@ -19,6 +19,8 @@ has 'visit_method' => (
 has 'extra_args' => (
     is => 'rw',
 );
+
+__PACKAGE__->meta->make_immutable;
 
 no Mouse;
 use Scalar::Util qw(reftype blessed);
@@ -116,18 +118,14 @@ sub utf8_off
     $self->visit($_[0]);
 }
 
-sub do_encode
-{
+sub do_encode {
     my $self = shift;
-    my $data = shift;
-    return Encode::encode($self->extra_args, $data);
+    return $_[0] = Encode::encode($self->extra_args, $_[0]);
 }
 
-sub do_decode
-{
+sub do_decode {
     my $self = shift;
-    my $data = shift;
-    return Encode::decode($self->extra_args, $data);
+    return $_[0] = Encode::decode($self->extra_args, $_[0]);
 }
 
 sub decode
@@ -137,7 +135,7 @@ sub decode
 
     $self->extra_args($code);
     $self->visit_method('decode');
-    $self->visit($_[0]);
+    $_[0] = $self->visit($_[0]);
 }
 
 sub encode
@@ -147,28 +145,25 @@ sub encode
 
     $self->extra_args($code);
     $self->visit_method('encode');
-    $self->visit($_[0]);
+    $_[0] = $self->visit($_[0]);
 }
 
-sub do_decode_utf8
-{
+sub do_decode_utf8 {
     my $self = shift;
-    my $data = shift;
-    return Encode::decode_utf8($data);
+    return $_[0] = Encode::decode_utf8($_[0]);
 }
 
 sub decode_utf8
 {
     my $self = _object(shift);
     $self->visit_method('decode_utf8');
-    $self->visit($_[0]);
+    $_[0] = $self->visit($_[0]);
 }
 
 sub do_encode_utf8
 {
     my $self = shift;
-    my $data = shift;
-    return Encode::encode_utf8($data);
+    return $_[0] = Encode::encode_utf8($_[0]);
 }
 
 sub encode_utf8
@@ -176,33 +171,32 @@ sub encode_utf8
     my $self = _object(shift);
     my $enc  = $_[1];
     $self->visit_method('encode_utf8');
-    $self->visit($_[0]);
+    $_[0] = $self->visit($_[0]);
 }
 
 sub do_h2z
 {
     my $self = shift;
-    my $data = shift;
 
     my $is_euc = ($self->extra_args =~ /^euc-jp$/i);
-    my $utf8_on = Encode::is_utf8($data);
+    my $utf8_on = Encode::is_utf8($_[0]);
     my $euc  =
         $is_euc ?
-            $data :
+            $_[0] :
         $utf8_on ?
-            Encode::encode('euc-jp', $data) :
-            Encode::encode('euc-jp', Encode::decode($self->extra_args, $data))
+            Encode::encode('euc-jp', $_[0]) :
+            Encode::encode('euc-jp', Encode::decode($self->extra_args, $_[0]))
     ;
 
     Encode::JP::H2Z::h2z(\$euc);
 
-    return 
+    return $_[0] = (
         $is_euc ?
             $euc :
         $utf8_on ?
             Encode::decode('euc-jp', $euc) :
             Encode::encode($self->extra_args, Encode::decode('euc-jp', $euc))
-    ;   
+    );   
 }
 
 sub h2z
@@ -218,27 +212,26 @@ sub h2z
 sub do_z2h
 {
     my $self = shift;
-    my $data = shift;
 
     my $is_euc = ($self->extra_args =~ /^euc-jp$/i);
-    my $utf8_on = Encode::is_utf8($data);
+    my $utf8_on = Encode::is_utf8($_[0]);
     my $euc  =
         $is_euc ?
-            $data :
+            $_[0] :
         $utf8_on ?
-            Encode::encode('euc-jp', $data) :
-            Encode::encode('euc-jp', Encode::decode($self->extra_args, $data))
+            Encode::encode('euc-jp', $_[0]) :
+            Encode::encode('euc-jp', Encode::decode($self->extra_args, $_[0]))
     ;
 
     Encode::JP::H2Z::z2h(\$euc);
         
-    return 
+    return $_[0] = (
         $is_euc ?
             $euc :
         $utf8_on ?
             Encode::decode('euc-jp', $euc) :
             Encode::encode($self->extra_args, Encode::decode('euc-jp', $euc))
-    ;   
+    );   
 }
 
 sub z2h
