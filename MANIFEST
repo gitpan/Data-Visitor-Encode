@@ -19,7 +19,5 @@ t/02-utf8_on_off.t
 t/03-encode_decode.t
 t/04-encode_decode_utf8.t
 t/05_h2z.t
-t/99_pod-coverage.t
-t/99_pod.t
 t/checkfunc.pl
 t/lib/Test/Data/Visitor/Encode.pm

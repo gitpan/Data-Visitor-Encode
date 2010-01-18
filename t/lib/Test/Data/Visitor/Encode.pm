@@ -1,4 +1,4 @@
-# $Id: /mirror/coderepos/lang/perl/Data-Visitor-Encode/trunk/t/lib/Test/Data/Visitor/Encode.pm 90224 2008-11-06T03:34:09.908798Z daisuke  $
+# $Id$
 
 package Test::Data::Visitor::Encode;
 use strict;
